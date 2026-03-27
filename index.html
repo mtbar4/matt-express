@@ -337,6 +337,63 @@
     </style>
 </head>
 <body>
+
+<!-- PASSWORD GATE -->
+<div id="lockScreen" style="
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 9999;
+    background: #1a1a1a;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Playfair Display', 'Georgia', serif;
+">
+    <div style="text-align: center; max-width: 380px; padding: 40px;">
+        <div style="margin-bottom: 30px;">
+            <div style="font-size: 3em; color: #fdf8f0; font-weight: 900; letter-spacing: 2px;">Matt Express</div>
+            <div style="font-size: 0.75em; color: #777; letter-spacing: 4px; text-transform: uppercase; margin-top: 6px;">Private Edition</div>
+        </div>
+        <div style="border-top: 2px solid #333; border-bottom: 2px solid #333; padding: 30px 0; margin-bottom: 20px;">
+            <div style="font-size: 0.8em; color: #888; margin-bottom: 14px; font-family: 'Libre Baskerville', Georgia, serif;">Enter your access code</div>
+            <input id="passInput" type="password" placeholder="Access code" autocomplete="off" style="
+                width: 100%; padding: 14px 18px; font-size: 1em;
+                font-family: 'Libre Baskerville', Georgia, serif;
+                background: #2a2a2a; border: 1px solid #444; color: #fdf8f0;
+                text-align: center; letter-spacing: 3px; border-radius: 0;
+                outline: none;
+            " onkeydown="if(event.key==='Enter')checkPass()">
+            <button onclick="checkPass()" style="
+                width: 100%; padding: 12px; margin-top: 12px;
+                font-family: 'Libre Baskerville', Georgia, serif;
+                font-size: 0.85em; letter-spacing: 2px; text-transform: uppercase;
+                background: #fdf8f0; color: #1a1a1a; border: none; cursor: pointer;
+                font-weight: 700;
+            ">Read Today's Edition</button>
+            <div id="passError" style="color: #c44; font-size: 0.78em; margin-top: 10px; display: none;">Incorrect access code</div>
+        </div>
+        <div style="font-size: 0.65em; color: #555; font-family: 'Libre Baskerville', Georgia, serif;">
+            This newspaper is privately published for authorised readers only.
+        </div>
+    </div>
+</div>
+
+<script>
+async function checkPass() {
+    var input = document.getElementById('passInput').value;
+    var encoder = new TextEncoder();
+    var data = encoder.encode(input);
+    var hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    var hashArray = Array.from(new Uint8Array(hashBuffer));
+    var hashHex = hashArray.map(function(b) { return b.toString(16).padStart(2, '0'); }).join('');
+    if (hashHex === '9b9a3b6290504c928cd40fc5dd7654f98a166d59ebe3be808fbd31692be1e0c9') {
+        document.getElementById('lockScreen').style.display = 'none';
+        document.getElementById('passInput').value = '';
+    } else {
+        document.getElementById('passError').style.display = 'block';
+        document.getElementById('passInput').value = '';
+        document.getElementById('passInput').focus();
+    }
+}
+document.addEventListener('DOMContentLoaded', function() { document.getElementById('passInput').focus(); });
+</script>
+
 <div class="newspaper">
 
     <!-- MASTHEAD -->
