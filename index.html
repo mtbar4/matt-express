@@ -1,650 +1,627 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Matt Express - Friday, March 27, 2026</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=UnifrakturMaguntia&display=swap');
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Matt Express &mdash; Private Edition</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=UnifrakturMaguntia&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #f6f1e7;
+    --ink: #14110d;
+    --muted: #5b5347;
+    --rule: #14110d;
+    --accent: #7a1f1f;
+    --commentary: #e9f3e6;
+    --commentary-border: #2f6b2a;
+    --commentary-ink: #1d3f1a;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #2a2622; }
+  body {
+    font-family: 'Libre Baskerville', Georgia, 'Times New Roman', serif;
+    color: var(--ink);
+    line-height: 1.55;
+  }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+  /* ==== PASSWORD GATE ==== */
+  #gate {
+    position: fixed; inset: 0;
+    background: #1a1a1a;
+    color: #f0e9d9;
+    display: flex; align-items: center; justify-content: center;
+    z-index: 9999;
+    padding: 24px;
+  }
+  #gate.hidden { display: none; }
+  .gate-card { max-width: 480px; width: 100%; text-align: center; }
+  .gate-card h1 {
+    font-family: 'UnifrakturMaguntia', serif;
+    font-size: clamp(56px, 9vw, 96px);
+    margin: 0 0 8px;
+    color: #f6f1e7;
+    letter-spacing: 1px;
+  }
+  .gate-card .sub {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 18px;
+    color: #b8aa8c;
+    margin-bottom: 36px;
+    letter-spacing: 0.5px;
+  }
+  .gate-card .pw-row { display: flex; flex-direction: column; gap: 12px; }
+  .gate-card input[type="password"] {
+    background: #2a2622;
+    border: 1px solid #5a4f3d;
+    color: #f6f1e7;
+    padding: 14px 16px;
+    font-family: 'Libre Baskerville', serif;
+    font-size: 16px;
+    border-radius: 2px;
+    text-align: center;
+    letter-spacing: 4px;
+  }
+  .gate-card input[type="password"]:focus { outline: none; border-color: #c9b27a; }
+  .gate-card button {
+    background: #c9b27a;
+    color: #1a1a1a;
+    border: none;
+    padding: 14px 18px;
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: background 0.2s;
+  }
+  .gate-card button:hover { background: #d8c290; }
+  .gate-error {
+    color: #d97a7a;
+    font-size: 14px;
+    min-height: 20px;
+    margin-top: 10px;
+    font-style: italic;
+  }
+  .gate-foot {
+    margin-top: 40px;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #7a6f56;
+  }
 
-        body {
-            font-family: 'Libre Baskerville', 'Georgia', 'Times New Roman', serif;
-            background: #d4cfc4;
-            color: #1a1a1a;
-            line-height: 1.55;
-        }
+  /* ==== NEWSPAPER ==== */
+  #paper {
+    background: var(--paper);
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 36px 48px 80px;
+    box-shadow: 0 0 60px rgba(0,0,0,0.4);
+    min-height: 100vh;
+  }
 
-        .newspaper {
-            max-width: 1020px;
-            margin: 30px auto;
-            background: #fdf8f0;
-            box-shadow: 0 4px 40px rgba(0,0,0,0.25), 0 0 0 1px rgba(0,0,0,0.08);
-            position: relative;
-        }
+  /* Masthead */
+  .masthead { border-bottom: 4px double var(--rule); padding-bottom: 14px; margin-bottom: 18px; }
+  .masthead .top-rule {
+    border-top: 1px solid var(--rule);
+    border-bottom: 4px solid var(--rule);
+    padding: 6px 0;
+    display: flex; justify-content: space-between;
+    font-family: 'Playfair Display', serif;
+    font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
+  }
+  .masthead .title {
+    font-family: 'UnifrakturMaguntia', serif;
+    text-align: center;
+    font-size: clamp(64px, 11vw, 130px);
+    line-height: 1;
+    margin: 14px 0 6px;
+    color: var(--ink);
+    letter-spacing: 1px;
+  }
+  .masthead .tagline {
+    text-align: center;
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 16px;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+  .masthead .meta {
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 6px 0;
+    font-family: 'Playfair Display', serif;
+    font-size: 12px; letter-spacing: 2px; text-transform: uppercase;
+  }
 
-        /* === MASTHEAD === */
-        .masthead {
-            text-align: center;
-            padding: 20px 40px 0;
-            border-bottom: 4px double #1a1a1a;
-        }
+  /* Section header */
+  .section-header {
+    margin: 36px 0 18px;
+    border-top: 3px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    padding: 6px 0;
+    text-align: center;
+    font-family: 'Playfair Display', serif;
+    font-weight: 900;
+    font-size: 16px;
+    letter-spacing: 8px;
+    text-transform: uppercase;
+  }
+  .section-header span {
+    display: inline-block;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    padding: 4px 18px;
+    margin: 4px 0;
+  }
 
-        .masthead-top-rule {
-            height: 3px;
-            background: #1a1a1a;
-            margin-bottom: 4px;
-        }
-        .masthead-top-rule-thin {
-            height: 1px;
-            background: #1a1a1a;
-            margin-bottom: 14px;
-        }
+  /* Lead story */
+  .lead { margin-bottom: 28px; border-bottom: 1px solid var(--rule); padding-bottom: 22px; }
+  .lead .kicker {
+    font-family: 'Playfair Display', serif;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    font-size: 11px;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+  .lead h2 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 900;
+    font-size: clamp(30px, 4vw, 46px);
+    line-height: 1.05;
+    margin: 0 0 10px;
+  }
+  .lead .deck {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 18px;
+    color: var(--muted);
+    margin-bottom: 14px;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 12px;
+  }
+  .lead .body {
+    columns: 2;
+    column-gap: 28px;
+    column-rule: 1px solid var(--rule);
+    text-align: justify;
+    hyphens: auto;
+    font-size: 14.5px;
+  }
+  .lead .body p { margin: 0 0 10px; }
+  .lead .body p:first-child::first-letter {
+    font-family: 'Playfair Display', serif;
+    font-weight: 900;
+    font-size: 56px;
+    line-height: 0.9;
+    float: left;
+    padding: 6px 8px 0 0;
+  }
 
-        .masthead-meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.7em;
-            color: #555;
-            letter-spacing: 0.5px;
-            margin-bottom: 8px;
-        }
+  /* Story grid */
+  .stories { columns: 3; column-gap: 28px; column-rule: 1px solid var(--rule); }
+  .stories.two-col { columns: 2; }
+  .story {
+    break-inside: avoid;
+    padding-bottom: 18px;
+    margin-bottom: 18px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .story:last-child { border-bottom: none; }
+  .story .kicker {
+    font-family: 'Playfair Display', serif;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-size: 10px;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+  .story h3 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 900;
+    font-size: 22px;
+    line-height: 1.1;
+    margin: 0 0 8px;
+  }
+  .story .byline {
+    font-family: 'Libre Baskerville', serif;
+    font-style: italic;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .story p { text-align: justify; hyphens: auto; font-size: 13.5px; margin: 0 0 8px; }
 
-        .masthead-title {
-            font-family: 'UnifrakturMaguntia', 'Playfair Display', serif;
-            font-size: 4.5em;
-            font-weight: 400;
-            letter-spacing: 2px;
-            line-height: 1;
-            color: #1a1a1a;
-            margin: 4px 0;
-        }
+  /* Inline commentary */
+  .commentary {
+    break-inside: avoid;
+    background: var(--commentary);
+    border-left: 4px solid var(--commentary-border);
+    padding: 14px 16px;
+    margin: 12px 0 8px;
+    font-family: 'Libre Baskerville', serif;
+    color: var(--commentary-ink);
+  }
+  .commentary .head {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 8px; flex-wrap: wrap;
+  }
+  .commentary .badge {
+    background: var(--commentary-border);
+    color: #fff;
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 3px 9px;
+    border-radius: 2px;
+  }
+  .commentary .impact {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--commentary-border);
+  }
+  .commentary p { font-size: 13.5px; margin: 0 0 6px; text-align: justify; }
+  .commentary .action {
+    font-size: 12.5px; font-style: italic;
+    margin-top: 6px; padding-top: 6px;
+    border-top: 1px dashed var(--commentary-border);
+  }
+  .commentary .action strong { font-style: normal; }
 
-        .masthead-subtitle {
-            font-family: 'Libre Baskerville', serif;
-            font-size: 0.72em;
-            letter-spacing: 5px;
-            text-transform: uppercase;
-            color: #666;
-            margin-bottom: 10px;
-        }
+  /* Sport pull quote */
+  .pullquote {
+    break-inside: avoid;
+    border-top: 3px solid var(--rule);
+    border-bottom: 3px solid var(--rule);
+    padding: 18px 12px;
+    margin: 14px 0;
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 22px;
+    line-height: 1.25;
+    text-align: center;
+    color: var(--ink);
+  }
+  .pullquote .attr {
+    display: block; font-style: normal;
+    font-size: 12px; letter-spacing: 3px;
+    text-transform: uppercase; margin-top: 10px; color: var(--muted);
+  }
 
-        .masthead-rule-bottom { height: 1px; background: #1a1a1a; }
+  /* Footer */
+  .colophon {
+    margin-top: 48px;
+    border-top: 4px double var(--rule);
+    padding-top: 16px;
+    text-align: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
 
-        .masthead-nav {
-            display: flex;
-            justify-content: center;
-            gap: 28px;
-            padding: 10px 0 14px;
-            font-size: 0.68em;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            color: #555;
-        }
-        .masthead-nav span { cursor: default; }
-        .masthead-nav span:hover { color: #1a1a1a; }
-
-        /* === SECTIONS === */
-        .content { padding: 0 40px 40px; }
-
-        .section { margin-top: 28px; }
-
-        .section-rule {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            margin-bottom: 18px;
-        }
-        .section-rule::before,
-        .section-rule::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: #1a1a1a;
-        }
-        .section-rule h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: 0.82em;
-            font-weight: 700;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            white-space: nowrap;
-            color: #1a1a1a;
-        }
-
-        /* === STORIES GRID === */
-        .stories-lead {
-            display: grid;
-            grid-template-columns: 1.4fr 1fr;
-            gap: 0;
-            border-bottom: 1px solid #ccc;
-            margin-bottom: 16px;
-        }
-        .stories-lead .story:first-child {
-            border-right: 1px solid #ccc;
-            padding-right: 24px;
-        }
-        .stories-lead .story:last-child {
-            padding-left: 24px;
-        }
-
-        .stories-columns {
-            column-count: 3;
-            column-gap: 24px;
-            column-rule: 1px solid #ccc;
-        }
-        .stories-columns-2 {
-            column-count: 2;
-            column-gap: 28px;
-            column-rule: 1px solid #ccc;
-        }
-
-        .story {
-            padding-bottom: 16px;
-            margin-bottom: 16px;
-            break-inside: avoid;
-            page-break-inside: avoid;
-        }
-
-        .story h3 {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.25em;
-            font-weight: 900;
-            line-height: 1.25;
-            color: #1a1a1a;
-            margin-bottom: 8px;
-        }
-
-        .story-lead h3 {
-            font-size: 1.9em;
-            line-height: 1.15;
-            margin-bottom: 10px;
-        }
-
-        .story p {
-            font-size: 0.82em;
-            text-align: justify;
-            hyphens: auto;
-            -webkit-hyphens: auto;
-            color: #2a2a2a;
-            margin-bottom: 6px;
-        }
-
-        .story .source {
-            font-size: 0.68em;
-            color: #888;
-            font-style: italic;
-            text-align: left;
-            margin-top: 4px;
-        }
-
-        .story-small h3 {
-            font-size: 1em;
-            font-weight: 700;
-        }
-        .story-small p {
-            font-size: 0.78em;
-        }
-
-        /* === LEAD IMAGE PLACEHOLDER === */
-        .lead-img {
-            width: 100%;
-            height: 160px;
-            background: linear-gradient(135deg, #e8e0d4, #d4cfc4);
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid #ccc;
-        }
-        .lead-img span {
-            font-family: 'Playfair Display', serif;
-            font-style: italic;
-            color: #999;
-            font-size: 0.8em;
-        }
-
-        /* === INLINE COMMENTARY === */
-        .commentary {
-            background: #f4f9f4;
-            border: 1px solid #c5dfc5;
-            border-left: 3px solid #2d6a2d;
-            padding: 12px 14px;
-            margin-top: 4px;
-            margin-bottom: 12px;
-            font-size: 0.78em;
-            break-inside: avoid;
-            page-break-inside: avoid;
-        }
-        .commentary-head {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 6px;
-        }
-        .commentary .badge {
-            background: #2d6a2d;
-            color: white;
-            font-family: 'Libre Baskerville', serif;
-            font-size: 0.72em;
-            font-weight: 700;
-            padding: 2px 8px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-        .commentary .impact {
-            font-weight: 700;
-            color: #2d6a2d;
-            font-size: 0.85em;
-            font-style: italic;
-        }
-        .commentary p {
-            color: #333;
-            font-size: 0.92em;
-            line-height: 1.55;
-            text-align: justify;
-            margin-bottom: 4px;
-        }
-        .commentary .action {
-            font-weight: 700;
-            color: #1a5c1a;
-            border-top: 1px solid #c5dfc5;
-            padding-top: 6px;
-            margin-top: 6px;
-        }
-
-        /* === HORIZONTAL STORIES ROW === */
-        .stories-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 0;
-        }
-        .stories-row .story {
-            padding: 0 20px;
-            border-right: 1px solid #ccc;
-        }
-        .stories-row .story:first-child { padding-left: 0; }
-        .stories-row .story:last-child { border-right: none; padding-right: 0; }
-
-        /* === DIVIDERS === */
-        .thick-rule {
-            height: 3px;
-            background: #1a1a1a;
-            margin: 4px 0;
-        }
-        .thin-rule {
-            height: 1px;
-            background: #1a1a1a;
-            margin: 4px 0;
-        }
-        .section-break {
-            border: none;
-            border-top: 1px solid #ccc;
-            margin: 24px 0 0;
-        }
-
-        /* === FOOTER === */
-        .footer {
-            text-align: center;
-            padding: 20px 40px;
-            border-top: 3px double #1a1a1a;
-            font-size: 0.72em;
-            color: #777;
-            letter-spacing: 1px;
-        }
-        .footer strong { color: #444; }
-
-        /* === WEATHER BAR === */
-        .weather-bar {
-            display: flex;
-            justify-content: center;
-            gap: 32px;
-            padding: 8px 0;
-            font-size: 0.68em;
-            color: #555;
-            border-top: 1px solid #ccc;
-            margin-top: 6px;
-        }
-
-        /* === PULL QUOTE === */
-        .pull-quote {
-            font-family: 'Playfair Display', serif;
-            font-style: italic;
-            font-size: 1.15em;
-            line-height: 1.4;
-            color: #333;
-            text-align: center;
-            padding: 14px 30px;
-            margin: 12px 0;
-            border-top: 2px solid #1a1a1a;
-            border-bottom: 2px solid #1a1a1a;
-        }
-
-        @media (max-width: 768px) {
-            .newspaper { margin: 0; }
-            .content { padding: 0 20px 30px; }
-            .masthead { padding: 16px 20px 0; }
-            .masthead-title { font-size: 2.8em; }
-            .stories-lead { grid-template-columns: 1fr; }
-            .stories-lead .story:first-child { border-right: none; padding-right: 0; border-bottom: 1px solid #ccc; }
-            .stories-lead .story:last-child { padding-left: 0; }
-            .stories-columns, .stories-columns-2 { column-count: 1; }
-            .stories-row { grid-template-columns: 1fr; }
-            .stories-row .story { padding: 0; border-right: none; border-bottom: 1px solid #ccc; }
-        }
-    </style>
+  /* Responsive */
+  @media (max-width: 820px) {
+    #paper { padding: 24px 18px 60px; }
+    .lead .body, .stories, .stories.two-col { columns: 1; column-rule: none; }
+    .masthead .top-rule, .masthead .meta { flex-direction: column; gap: 4px; text-align: center; }
+  }
+</style>
 </head>
 <body>
 
-<!-- PASSWORD GATE -->
-<div id="lockScreen" style="
-    position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 9999;
-    background: #1a1a1a;
-    display: flex; align-items: center; justify-content: center;
-    font-family: 'Playfair Display', 'Georgia', serif;
-">
-    <div style="text-align: center; max-width: 380px; padding: 40px;">
-        <div style="margin-bottom: 30px;">
-            <div style="font-size: 3em; color: #fdf8f0; font-weight: 900; letter-spacing: 2px;">Matt Express</div>
-            <div style="font-size: 0.75em; color: #777; letter-spacing: 4px; text-transform: uppercase; margin-top: 6px;">Private Edition</div>
-        </div>
-        <div style="border-top: 2px solid #333; border-bottom: 2px solid #333; padding: 30px 0; margin-bottom: 20px;">
-            <div style="font-size: 0.8em; color: #888; margin-bottom: 14px; font-family: 'Libre Baskerville', Georgia, serif;">Enter your access code</div>
-            <input id="passInput" type="password" placeholder="Access code" autocomplete="off" style="
-                width: 100%; padding: 14px 18px; font-size: 1em;
-                font-family: 'Libre Baskerville', Georgia, serif;
-                background: #2a2a2a; border: 1px solid #444; color: #fdf8f0;
-                text-align: center; letter-spacing: 3px; border-radius: 0;
-                outline: none;
-            " onkeydown="if(event.key==='Enter')checkPass()">
-            <button onclick="checkPass()" style="
-                width: 100%; padding: 12px; margin-top: 12px;
-                font-family: 'Libre Baskerville', Georgia, serif;
-                font-size: 0.85em; letter-spacing: 2px; text-transform: uppercase;
-                background: #fdf8f0; color: #1a1a1a; border: none; cursor: pointer;
-                font-weight: 700;
-            ">Read Today's Edition</button>
-            <div id="passError" style="color: #c44; font-size: 0.78em; margin-top: 10px; display: none;">Incorrect access code</div>
-        </div>
-        <div style="font-size: 0.65em; color: #555; font-family: 'Libre Baskerville', Georgia, serif;">
-            This newspaper is privately published for authorised readers only.
-        </div>
+<!-- ==== PASSWORD GATE ==== -->
+<div id="gate">
+  <div class="gate-card">
+    <h1>Matt Express</h1>
+    <div class="sub">&mdash; Private Edition &mdash;</div>
+    <form id="gate-form" class="pw-row" autocomplete="off">
+      <input type="password" id="pw" placeholder="Enter passphrase" autocomplete="off" />
+      <button type="submit">Read Today&#39;s Edition</button>
+      <div class="gate-error" id="gate-error">&nbsp;</div>
+    </form>
+    <div class="gate-foot">Established 2026 &middot; For Matt&#39;s eyes only</div>
+  </div>
+</div>
+
+<!-- ==== NEWSPAPER ==== -->
+<div id="paper" style="display:none;">
+
+  <header class="masthead">
+    <div class="top-rule">
+      <span>Vol. I &middot; No. 127</span>
+      <span>Private Edition</span>
+      <span>Price: One Coffee</span>
     </div>
+    <div class="title">Matt Express</div>
+    <div class="tagline">&ldquo;All the news that fits, fitted for one reader.&rdquo;</div>
+    <div class="meta">
+      <span>Wednesday, May 6, 2026</span>
+      <span>Sydney &middot; Melbourne &middot; The World</span>
+      <span>Morning Edition</span>
+    </div>
+  </header>
+
+  <!-- ============ SECTION 1: AUSTRALIA & WORLD ============ -->
+  <div class="section-header"><span>Australia &amp; World</span></div>
+
+  <article class="lead">
+    <div class="kicker">Diplomacy</div>
+    <h2>Australia and Japan Sign Sweeping New Pact on Defence, Energy and Critical Minerals</h2>
+    <div class="deck">Albanese and Takaichi unveil agreement designed to shore up regional security and economic ties amid a turbulent Indo-Pacific.</div>
+    <div class="body">
+      <p>Australia and Japan have struck a wide-ranging new agreement to deepen security and economic ties, jointly announced this week by Prime Minister Anthony Albanese and his Japanese counterpart Sanae Takaichi. The pact spans defence cooperation, energy security, critical minerals supply chains and broader economic resilience.</p>
+      <p>Officials in both capitals framed the deal as a response to a more contested regional environment and to growing demand for stable, democratic supply partners in advanced manufacturing inputs. The critical minerals chapter is expected to dovetail with Australia&#39;s existing offtake arrangements with allied partners.</p>
+      <p>The economic security provisions cover joint resilience planning for energy and food, while the defence track formalises closer interoperability between the Australian Defence Force and Japan&#39;s Self-Defense Forces. A ministerial review is scheduled within twelve months.</p>
+    </div>
+  </article>
+
+  <div class="stories">
+    <div class="story">
+      <div class="kicker">Northern Territory</div>
+      <h3>Murder charge laid in death of five-year-old in NT</h3>
+      <p>Police in the Northern Territory have charged a 47-year-old man with the murder of an Indigenous girl whose death sparked protests in an outback town earlier this month. The case will return to court in coming weeks. Community leaders have called for calm as inquiries continue.</p>
+    </div>
+    <div class="story">
+      <div class="kicker">Middle East</div>
+      <h3>US&ndash;Iran ceasefire tested in Strait of Hormuz</h3>
+      <p>The fragile ceasefire between Washington and Tehran is being tested after exchanges of fire in the Strait of Hormuz. The US military said it sank six small Iranian boats while moving to reopen the strait, and the United Arab Emirates reported missile and drone activity directed its way. Casualty figures remain disputed.</p>
+    </div>
+    <div class="story">
+      <div class="kicker">Press Freedom</div>
+      <h3>Global press freedom at lowest point in 25 years</h3>
+      <p>Reporters Without Borders&#39; 2026 World Press Freedom Index reports that more than half the world&#39;s countries now sit in the &ldquo;difficult&rdquo; or &ldquo;very serious&rdquo; categories, the worst reading since the index began. The organisation cites economic pressure, political pressure and physical threats as the dominant drivers.</p>
+    </div>
+    <div class="story">
+      <div class="kicker">Domestic</div>
+      <h3>Tax tweaks and super changes set for 1 July</h3>
+      <p>Treasurer Jim Chalmers has flagged that a suite of tax and superannuation adjustments will take effect on 1 July, with further measures to follow in the coming federal budget. Households are urged to review payroll and contribution settings ahead of the change-over.</p>
+    </div>
+  </div>
+
+  <!-- ============ SECTION 2: BUSINESS - NDIS ============ -->
+  <div class="section-header"><span>Business &middot; NDIS</span></div>
+
+  <div class="stories two-col">
+
+    <div class="story">
+      <div class="kicker">Reform</div>
+      <h3>&ldquo;Securing the NDIS&rdquo; bill returns to Parliament with budget</h3>
+      <p class="byline">Canberra correspondent</p>
+      <p>The federal government has confirmed it will introduce the National Disability Insurance Scheme Amendment (Securing the NDIS for Future Generations) Bill alongside the 2026&ndash;27 Budget. The package proposes to remove around 160,000 participants from the scheme over four years and to reduce average plan funding by approximately A$5,000 within two years.</p>
+      <p>Eligibility will move away from medical-diagnosis gating toward an assessment of functional capacity, environment and individual aspirations. Claims and payments systems will be progressively rebuilt from July 2026, with a full rollout targeted by the end of 2030.</p>
+    </div>
+    <div class="commentary">
+      <div class="head">
+        <span class="badge">Central Care</span>
+        <span class="impact">Regulatory Impact</span>
+      </div>
+      <p>The shift to functional-capacity assessments and tighter eligibility will reshape the participant pipeline that Central Care services. A meaningful share of new referrals is likely to be either rejected or routed onto smaller plans, while existing participants face plan reductions averaging A$5,000 &mdash; directly squeezing the volume of support coordination and plan management hours per file.</p>
+      <p class="action"><strong>Action:</strong> Stress-test FY27 revenue against three scenarios &mdash; flat, &ndash;10%, &ndash;20% participant volume &mdash; and prepare client communications explaining the new functional-capacity framework before assessments begin.</p>
+    </div>
+
+    <div class="story">
+      <div class="kicker">Plan Management</div>
+      <h3>Plan management to be commissioned through panel from October 2027</h3>
+      <p>The federal government has confirmed it will commission a panel of plan management providers, with implementation from 1 October 2027 following a six-month transition. The objective, according to officials, is to lift quality and integrity standards and reduce fraud, while addressing pricing across plan management, support coordination and home-and-living supports.</p>
+    </div>
+    <div class="commentary">
+      <div class="head">
+        <span class="badge">Central Care</span>
+        <span class="impact">Strategic Risk &amp; Opportunity</span>
+      </div>
+      <p>A commissioned panel model means plan management will become a contracted market &mdash; not an open one. Providers that aren&#39;t on the panel risk being excluded; providers that are on it will see steadier flow but tighter pricing and integrity scrutiny. Quality and audit posture become commercial differentiators, not back-office hygiene.</p>
+      <p class="action"><strong>Action:</strong> Begin panel-readiness work now: documented quality systems, fraud controls, audited financials, and a clear value proposition for participants and the agency.</p>
+    </div>
+
+    <div class="story">
+      <div class="kicker">Support Coordination</div>
+      <h3>New support coordination function to begin July 2028</h3>
+      <p>A newly commissioned support coordination function will commence from 1 July 2028, with the NDIS Commission&#39;s earlier work on mandatory registration for support coordinators having been paused in December 2025. Budgets for social and community participation supports are due to begin changing from 1 October 2026, with the broader new planning framework rolling out from mid-2026 through to 2030.</p>
+    </div>
+    <div class="commentary">
+      <div class="head">
+        <span class="badge">Central Care</span>
+        <span class="impact">Growth Opportunity</span>
+      </div>
+      <p>The two-and-a-half-year window before the commissioned support coordination function begins is a build window, not a wait window. Operators that arrive in July 2028 with deep participant relationships, clean outcome data, and integrated plan management will be best placed to win commissioned slots.</p>
+      <p class="action"><strong>Action:</strong> Capture and report participant outcomes consistently from now through 2028 &mdash; that data will be the strongest commissioning evidence.</p>
+    </div>
+
+  </div>
+
+  <!-- ============ SECTION 3: BUSINESS - NOW CORP ============ -->
+  <div class="section-header"><span>Business &middot; Now Corp</span></div>
+
+  <div class="stories two-col">
+
+    <div class="story">
+      <div class="kicker">Embedded Finance</div>
+      <h3>2026 tipped as the turning point for embedded finance in Australia</h3>
+      <p class="byline">Fintech desk</p>
+      <p>Industry analysts are calling 2026 the year embedded financial services move from &ldquo;optional&rdquo; to &ldquo;essential&rdquo; for growth-oriented Australian platforms. B2B embedded payments globally are projected to reach US$2.6 trillion in 2026, with embedded invoice finance among the fastest-moving categories. Australia&#39;s open banking and Consumer Data Right frameworks are cited as enabling conditions, alongside maturing platform distribution.</p>
+    </div>
+    <div class="commentary">
+      <div class="head">
+        <span class="badge">PaidNow</span>
+        <span class="impact">Growth Opportunity</span>
+      </div>
+      <p>The macro thesis underpinning PaidNow is now squarely consensus &mdash; embedded invoice finance is moving from edge case to default expectation on B2B platforms. The implication is that distribution windows with the largest trades and strata platforms will close faster than expected, and competitor platforms will start bundling similar offerings.</p>
+      <p class="action"><strong>Action:</strong> Accelerate the SMATA partnership rollout and lock in two more platform partnerships in the next quarter while the category is still being defined.</p>
+    </div>
+
+    <div class="story">
+      <div class="kicker">Strata</div>
+      <h3>NSW strata reforms take effect, lifting accountability for developers and managers</h3>
+      <p>The latest tranche of NSW strata reforms began operating from 1 April 2026, improving repairs and maintenance planning, strengthening developer accountability, and offering better support to incoming buyers. Adoption of digital maintenance platforms, integrated levy and expense systems, and smart-building telemetry continues to accelerate, with operators warning that schemes slow to digitise risk falling behind on cost and compliance.</p>
+    </div>
+    <div class="commentary">
+      <div class="head">
+        <span class="badge">TradesNow</span>
+        <span class="impact">Regulatory Tailwind</span>
+      </div>
+      <p>Stronger repair-and-maintenance planning obligations push strata managers toward systems that can produce auditable job records, quotes, scheduling and invoicing. That is precisely the surface area TradesNow already covers &mdash; and the SMATA-aligned distribution channel into 3,000 strata managers becomes more valuable in a regime where compliance evidence sits with the strata manager.</p>
+      <p class="action"><strong>Action:</strong> Package a &ldquo;NSW reform compliance&rdquo; template inside TradesNow &mdash; quote, schedule, invoice, payment evidence &mdash; and pitch it through SMATA in the next 30 days.</p>
+    </div>
+
+    <div class="story">
+      <div class="kicker">Construction</div>
+      <h3>Australian construction market to grow 6.9% in 2026 even as labour shortages persist</h3>
+      <p>Forecasters expect Australia&#39;s construction market to expand by 6.9% in 2026 to roughly A$193 billion, driven by AUKUS-linked defence investment, data centre construction and metro megaprojects. Hybrid teams pairing skilled workers with automated systems, drones for site inspections, BIM and digital twins are now baseline tools, even as labour shortages, rising input costs and cash-flow stress weigh on smaller builders.</p>
+    </div>
+    <div class="commentary">
+      <div class="head">
+        <span class="badge">PaidNow &middot; TradesNow</span>
+        <span class="impact">Demand Signal</span>
+      </div>
+      <p>Cash-flow stress at the bottom of the contractor stack is the single most cited pain point in this cycle. That is the exact problem PaidNow solves for subcontractors, and TradesNow&#39;s job management layer is the data trail that makes invoice finance underwritable. Rising volumes plus tighter margins is the textbook backdrop for embedded payment products.</p>
+      <p class="action"><strong>Action:</strong> Sharpen the joint pitch &mdash; TradesNow as the system of record, PaidNow as instant payment &mdash; and target sub-contractor segments most exposed to cash-flow stress (electrical, plumbing, fit-out).</p>
+    </div>
+
+  </div>
+
+  <!-- ============ SECTION 4: SPORT ============ -->
+  <div class="section-header"><span>Sport</span></div>
+
+  <div class="stories two-col">
+
+    <div class="story">
+      <div class="kicker">Premier League</div>
+      <h3>Spurs claw out of the drop zone with gritty 2&ndash;1 win over Villa</h3>
+      <p class="byline">North London correspondent</p>
+      <p>Tottenham Hotspur dragged themselves out of the relegation zone with a hard-fought 2&ndash;1 victory over Aston Villa, their fourth from the last seven and arguably the most important result of Roberto De Zerbi&#39;s tenure. With three games to go, Spurs sit one point above the bottom three.</p>
+      <p>Centre-back Kevin Danso pledged to supporters that the team would &ldquo;keep giving everything&rdquo; until the season&#39;s end, while De Zerbi&#39;s injury list grew to eleven players after Xavi Simons confirmed he had ruptured his ACL during last weekend&#39;s win at Wolves.</p>
+    </div>
+
+    <div class="pullquote">
+      &ldquo;We keep giving everything. We owe these fans, every minute, every game.&rdquo;
+      <span class="attr">&mdash; Kevin Danso, Tottenham Hotspur</span>
+    </div>
+
+    <div class="story">
+      <div class="kicker">Transfers</div>
+      <h3>Spurs urged to make a &ldquo;big buy&rdquo; up top this summer</h3>
+      <p>With survival in sight but margins razor-thin, Tottenham have been urged by insiders to make a marquee striker signing in the summer window. Curtis Jones of Liverpool is also being floated, though sources suggest Anfield will demand assurances on role and ambition before any deal proceeds.</p>
+    </div>
+
+    <div class="story">
+      <div class="kicker">AFL</div>
+      <h3>Bobby Hill bags three on VFL return as Pies eye fit forward line</h3>
+      <p>Bobby Hill impressed in his second VFL outing since returning from a personal break, kicking three goals from seven disposals as he edges back to match fitness. The club has unveiled its 2026 Sir Doug Nicholls Round guernsey, designed by 11-year-old Noongar Yamatji artist Jed Bennell and inspired by Hill&#39;s own story. Collingwood next play Western Bulldogs on 30 May.</p>
+    </div>
+
+    <div class="story">
+      <div class="kicker">Partnership</div>
+      <h3>Myer joins Magpies as major partner across AFL and AFLW</h3>
+      <p>The Collingwood Football Club has welcomed Myer to the black-and-white family as a major partner across both AFL and AFLW programs &mdash; a notable retail tie-up at a time when major-code partnerships are becoming harder to land.</p>
+    </div>
+
+  </div>
+
+  <!-- ============ SECTION 5: TECH & INNOVATION ============ -->
+  <div class="section-header"><span>Tech &amp; Innovation</span></div>
+
+  <div class="stories">
+
+    <div class="story">
+      <div class="kicker">Policy</div>
+      <h3>White House moves toward comprehensive AI regulation</h3>
+      <p>The White House announced on 3 May that the US government is developing a comprehensive regulatory framework for artificial intelligence, intended to set safety, accountability and fairness standards across sectors. Industry response has been cautiously positive, though smaller developers warn that compliance overhead must not lock in incumbents.</p>
+    </div>
+
+    <div class="story">
+      <div class="kicker">Capital</div>
+      <h3>Anthropic eyes US$900 billion valuation round</h3>
+      <p>Anthropic, maker of the Claude family of models, is reportedly exploring a fundraise that would value the company near US$900 billion. The round, if completed at that level, would mark one of the largest private valuations on record and would underline the capital intensity of frontier-model development.</p>
+    </div>
+
+    <div class="story">
+      <div class="kicker">Agents</div>
+      <h3>The next wave: AI agents that work in teams</h3>
+      <p>After a first wave of AI agents that operated alone, attention is now turning to teams of cooperating agents able to tackle multi-step, multi-skill goals. MIT Technology Review&#39;s 2026 round-up flags multi-agent systems as the year&#39;s most significant capability shift, with implications across customer operations, software engineering and back-office automation.</p>
+    </div>
+
+    <div class="story">
+      <div class="kicker">Geopolitics</div>
+      <h3>US lead over Chinese frontier models narrows to 2.7%</h3>
+      <p>According to Stanford&#39;s AI Index, US and Chinese frontier models have traded the top of leaderboards multiple times since early 2025, with Anthropic&#39;s leading model ahead by just 2.7% as of March 2026. Analysts say the gap is now small enough that talent, energy supply and chip access &mdash; not architectures &mdash; are the decisive variables.</p>
+    </div>
+
+    <div class="story">
+      <div class="kicker">Defence</div>
+      <h3>Pentagon signs AI deals with Nvidia, Microsoft and AWS</h3>
+      <p>The Pentagon has signed agreements with Nvidia, Microsoft and AWS to deploy artificial intelligence on classified networks, deliberately diversifying away from earlier single-vendor arrangements. The move signals that AI is becoming part of the defence procurement baseline, not an experimental adjunct.</p>
+    </div>
+
+    <div class="story">
+      <div class="kicker">Consumer Value</div>
+      <h3>Consumer value of generative AI hits US$172bn a year</h3>
+      <p>The estimated annual value of generative AI tools to US consumers reached US$172 billion in early 2026, with median per-user value tripling between 2025 and 2026. The figures suggest that the productivity gains many enterprises are still attempting to measure are already showing up in consumer time-saved metrics.</p>
+    </div>
+
+  </div>
+
+  <footer class="colophon">
+    Matt Express &middot; Compiled for Matt Bartalotta &middot; Now Corp Press &middot; Wednesday, May 6, 2026<br>
+    Editorial commentary reflects business context for PaidNow, TradesNow and Central Care &middot; Not investment advice
+  </footer>
+
 </div>
 
 <script>
-async function checkPass() {
-    var input = document.getElementById('passInput').value;
-    var encoder = new TextEncoder();
-    var data = encoder.encode(input);
-    var hashBuffer = await crypto.subtle.digest('SHA-256', data);
-    var hashArray = Array.from(new Uint8Array(hashBuffer));
-    var hashHex = hashArray.map(function(b) { return b.toString(16).padStart(2, '0'); }).join('');
-    if (hashHex === '9b9a3b6290504c928cd40fc5dd7654f98a166d59ebe3be808fbd31692be1e0c9') {
-        document.getElementById('lockScreen').style.display = 'none';
-        document.getElementById('passInput').value = '';
-    } else {
-        document.getElementById('passError').style.display = 'block';
-        document.getElementById('passInput').value = '';
-        document.getElementById('passInput').focus();
+  // SHA-256 of the passphrase "matt2026"
+  const TARGET_HASH = "9b9a3b6290504c928cd40fc5dd7654f98a166d59ebe3be808fbd31692be1e0c9";
+
+  async function sha256Hex(message) {
+    const data = new TextEncoder().encode(message);
+    const buf = await crypto.subtle.digest("SHA-256", data);
+    return Array.from(new Uint8Array(buf))
+      .map(b => b.toString(16).padStart(2, "0"))
+      .join("");
+  }
+
+  const gate = document.getElementById("gate");
+  const paper = document.getElementById("paper");
+  const form = document.getElementById("gate-form");
+  const pw = document.getElementById("pw");
+  const err = document.getElementById("gate-error");
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    err.textContent = "";
+    const value = pw.value || "";
+    try {
+      const hash = await sha256Hex(value);
+      if (hash === TARGET_HASH) {
+        gate.classList.add("hidden");
+        paper.style.display = "block";
+        document.body.style.background = "#2a2622";
+      } else {
+        err.textContent = "Incorrect passphrase. Try again.";
+        pw.value = "";
+        pw.focus();
+      }
+    } catch (ex) {
+      err.textContent = "Browser does not support secure hashing.";
     }
-}
-document.addEventListener('DOMContentLoaded', function() { document.getElementById('passInput').focus(); });
+  });
+
+  window.addEventListener("DOMContentLoaded", () => pw.focus());
 </script>
 
-<div class="newspaper">
-
-    <!-- MASTHEAD -->
-    <div class="masthead">
-        <div class="masthead-top-rule"></div>
-        <div class="masthead-top-rule-thin"></div>
-        <div class="masthead-meta">
-            <span>Vol. I &middot; No. 1</span>
-            <span>Bias-Free &middot; Fact-Focused &middot; Curated Daily</span>
-            <span>Friday, March 27, 2026</span>
-        </div>
-        <div class="masthead-title">Matt Express</div>
-        <div class="masthead-subtitle">Your Personal Daily Broadsheet</div>
-        <div class="masthead-rule-bottom"></div>
-        <div class="masthead-nav">
-            <span>Australia &amp; World</span>
-            <span>&bull;</span>
-            <span>Business (NDIS)</span>
-            <span>&bull;</span>
-            <span>Business (Now Corp)</span>
-            <span>&bull;</span>
-            <span>Sport</span>
-            <span>&bull;</span>
-            <span>Tech &amp; Innovation</span>
-        </div>
-    </div>
-
-    <div class="content">
-
-        <!-- ============================================ -->
-        <!-- AUSTRALIA & WORLD NEWS -->
-        <!-- ============================================ -->
-        <div class="section">
-            <div class="section-rule"><h2>Australia &amp; World News</h2></div>
-
-            <div class="stories-lead">
-                <div class="story story-lead">
-                    <h3>Iran Closes Strait of Hormuz, Threatens to Attack Ships</h3>
-                    <div class="lead-img"><span>Strait of Hormuz &mdash; satellite imagery</span></div>
-                    <p>An Iranian military commander declared the Strait of Hormuz closed to all maritime traffic, threatening to set fire to any vessel attempting to cross the waterway. The strait, which handles roughly one-fifth of the world&rsquo;s total oil supply, is now at the centre of the most significant naval standoff since the 1980s Tanker War.</p>
-                    <p>International shipping companies have begun rerouting tankers via the longer Cape of Good Hope route, adding two weeks and millions of dollars in transit costs. Oil futures surged eight per cent on the announcement.</p>
-                    <p class="source">CNN, Reuters</p>
-                </div>
-                <div class="story">
-                    <h3>Trump Pauses US Strikes on Iran&rsquo;s Energy Infrastructure</h3>
-                    <p>President Trump announced a 10-day pause in strikes against Iran&rsquo;s energy sites, extending until April&nbsp;6. More than 1,750 people have been killed in Iran since US-Israel strikes began on February&nbsp;28. The pause comes amid intense back-channel diplomacy, with Qatar mediating between Washington and Tehran.</p>
-                    <p class="source">CNN</p>
-
-                    <h3 style="margin-top: 18px;">Australia Bans Iranian Visitors Amid Tensions</h3>
-                    <p>The Department of Home Affairs has announced a six-month restriction on Iranian citizens entering Australia, suspending tourism and work visas effective immediately. The decision affects an estimated 4,200 pending applications.</p>
-                    <p class="source">Al Jazeera</p>
-                </div>
-            </div>
-
-            <div class="stories-row">
-                <div class="story story-small">
-                    <h3>Tropical Cyclone Narelle Bears Down on WA</h3>
-                    <p>Tropical Cyclone Narelle is tracking southwest near Broome, with forecasters predicting heavy rainfall, destructive winds and widespread power outages across the Kimberley and Pilbara regions. Perth may receive the tail end of the system by Monday.</p>
-                    <p class="source">Bureau of Meteorology, SBS News</p>
-                </div>
-                <div class="story story-small">
-                    <h3>Fuel Shortages Spread Across Major Cities</h3>
-                    <p>Multiple states are experiencing diesel and unleaded fuel shortages, with Victoria reporting 134 service stations lacking one or more grades. Diesel prices have surged past $3 per litre nationally, squeezing transport operators and construction firms.</p>
-                    <p class="source">SBS News</p>
-                </div>
-                <div class="story story-small">
-                    <h3>RBA Holds Cash Rate at 3.85% Amid Global Uncertainty</h3>
-                    <p>The Reserve Bank held the cash rate steady at its March meeting, citing geopolitical uncertainty and the inflationary impact of rising fuel costs. Governor Bullock signalled a possible cut in May if headline inflation continues to moderate.</p>
-                    <p class="source">RBA, AFR</p>
-                </div>
-            </div>
-        </div>
-
-        <hr class="section-break">
-
-        <!-- ============================================ -->
-        <!-- BUSINESS (NDIS) -->
-        <!-- ============================================ -->
-        <div class="section">
-            <div class="section-rule"><h2>Business (NDIS)</h2></div>
-
-            <div class="stories-columns-2">
-                <div class="story">
-                    <h3>NDIS Framework Planning Rollout Begins Mid-2026</h3>
-                    <p>The Australian government is introducing a new framework planning model for the NDIS starting mid-2026, beginning with a small number of participants before a broader rollout. New SIL and platform provider registration requirements take effect from July&nbsp;1, requiring all existing providers to re-register under updated categories.</p>
-                    <p>The structured support needs assessments will fundamentally change how participant budgets are allocated, with the government projecting annual savings of $2.3&nbsp;billion once fully implemented.</p>
-                    <p class="source">NDIS Official, The Guardian</p>
-                </div>
-                <div class="commentary">
-                    <div class="commentary-head">
-                        <span class="badge">Central Care</span>
-                        <span class="impact">Regulatory Impact</span>
-                    </div>
-                    <p>New provider registration requirements from July&nbsp;1 directly affect Central Care as a registered NDIS provider. The structured support needs assessments will change how participant budgets are allocated, which could shift spending patterns for on-demand services.</p>
-                    <p class="action">Action: Audit Central Care&rsquo;s provider registration against the new July&nbsp;1 categories and begin any re-registration process early.</p>
-                </div>
-
-                <div class="story">
-                    <h3>$10 Billion Foundational Supports Program Committed</h3>
-                    <p>Federal and state governments have committed $10&nbsp;billion over five years to establish &ldquo;foundational supports&rdquo; for people with disabilities who do not meet NDIS eligibility. The program covers early intervention and community-based services, with a staged rollout reaching full national coverage by 2028.</p>
-                    <p class="source">Department of Health, Disability and Ageing</p>
-                </div>
-                <div class="commentary">
-                    <div class="commentary-head">
-                        <span class="badge">Central Care</span>
-                        <span class="impact">Growth Opportunity</span>
-                    </div>
-                    <p>This $10B program creates a new market of people with disabilities who don&rsquo;t qualify for NDIS but will now receive funded support. Central Care&rsquo;s on-demand model is well-suited to serve this segment as state governments build delivery infrastructure.</p>
-                </div>
-
-                <div class="story">
-                    <h3>NDIS Fraud Probe Uncovers Potential $5B in Losses</h3>
-                    <p>A provider was charged with fraud for allegedly transferring $859,000 of NDIS funding into personal gambling accounts. Broader reports suggest up to $5&nbsp;billion may have been lost to fraudulent claims across the scheme, prompting increased compliance monitoring and a new fraud taskforce with 200 additional investigators.</p>
-                    <p class="source">NDIS Fraud Taskforce, ABC News</p>
-                </div>
-            </div>
-        </div>
-
-        <hr class="section-break">
-
-        <!-- ============================================ -->
-        <!-- BUSINESS (NOW CORP) -->
-        <!-- ============================================ -->
-        <div class="section">
-            <div class="section-rule"><h2>Business (Now Corp)</h2></div>
-
-            <div class="stories-columns-2">
-                <div class="story">
-                    <h3>Trades Workforce Shortage Peaks: 126,000 Gap Projected by Mid-2027</h3>
-                    <p>Every construction-specific occupation in Australia is now listed as in national shortage &mdash; the only industry in which every role faces universal shortages. The gap for trades workers and labourers is projected to peak at 126,000 by mid-2027, with electricians, plumbers and carpenters the hardest to fill.</p>
-                    <p class="source">Jobs and Skills Australia</p>
-                </div>
-                <div class="commentary">
-                    <div class="commentary-head">
-                        <span class="badge">TradesNow</span>
-                        <span class="impact">Market Tailwind</span>
-                    </div>
-                    <p>Universal trade shortages make efficient job matching more critical than ever. Strata managers struggling to find reliable trades will be more receptive to a curated B2B marketplace. TradesNow&rsquo;s position inside SMATA&rsquo;s 3,000 strata manager network means it can aggregate demand and make the existing 15,000 registered trades more accessible.</p>
-                </div>
-
-                <div class="story">
-                    <h3>NSW Strata Law Reforms Take Effect April 1</h3>
-                    <p>Major strata reforms hit New South Wales from April&nbsp;1, including mandatory maintenance schedules for new developments, independent surveyor certification, and new 10-year capital works fund plan requirements. The reforms affect more than 1.2&nbsp;million strata lots across the state.</p>
-                    <p class="source">NSW Government, Strata Community Association</p>
-                </div>
-                <div class="commentary">
-                    <div class="commentary-head">
-                        <span class="badge">TradesNow</span>
-                        <span class="impact">Direct Impact</span>
-                    </div>
-                    <p>Mandatory maintenance schedules and 10-year capital works plans mean strata managers will need to procure more trades work, more consistently, and with better documentation. This directly increases demand for a structured B2B marketplace.</p>
-                    <p class="action">Action: Position TradesNow&rsquo;s launch messaging around helping strata managers meet the new April&nbsp;1 NSW compliance requirements.</p>
-                </div>
-
-                <div class="story">
-                    <h3>Embedded Finance Hits Tipping Point in Australia</h3>
-                    <p>Multiple forces are converging to drive rapid adoption of embedded finance in Australia: mature API ecosystems, Banking-as-a-Service infrastructure, and open banking regulatory frameworks. The global embedded finance market is projected to reach $588&nbsp;billion by 2030, with Australia&rsquo;s share growing at 28% annually.</p>
-                    <p class="source">Australian FinTech</p>
-                </div>
-                <div class="commentary">
-                    <div class="commentary-head">
-                        <span class="badge">PaidNow</span>
-                        <span class="impact">Market Validation</span>
-                    </div>
-                    <p>PaidNow&rsquo;s embedded invoice finance model &mdash; built directly into the SMATA workflow &mdash; is exactly the kind of platform-native financial product this trend describes. The early-mover position inside a platform with 15,000 trades gives it a distribution advantage standalone fintech competitors can&rsquo;t replicate.</p>
-                </div>
-
-                <div class="story">
-                    <h3>WA Skilled Migration Round Prioritises Building Trades</h3>
-                    <p>Western Australia&rsquo;s March 2026 skilled migration invitation round heavily prioritised building-trades occupations, which accounted for nearly 60% of invitations. Maintenance Planners required 100 points &mdash; the highest threshold of any occupation this cycle.</p>
-                    <p class="source">VisaHQ, WA State Government</p>
-                </div>
-            </div>
-        </div>
-
-        <hr class="section-break">
-
-        <!-- ============================================ -->
-        <!-- SPORT -->
-        <!-- ============================================ -->
-        <div class="section">
-            <div class="section-rule"><h2>Sport</h2></div>
-
-            <div class="pull-quote">
-                &ldquo;We need to find consistency. The effort is there but the results are not matching.&rdquo;
-            </div>
-
-            <div class="stories-columns-2">
-                <div class="story">
-                    <h3>Spurs Suffer Heavy 3&ndash;0 Home Defeat to Forest</h3>
-                    <p>Tottenham Hotspur suffered a devastating 3&ndash;0 loss to Nottingham Forest at the Tottenham Hotspur Stadium on March&nbsp;22, with caretaker staff overseeing proceedings in manager Igor Tudor&rsquo;s absence due to personal matters. Goals from Chris Wood, Callum Hudson-Odoi and Morgan Gibbs-White compounded a miserable afternoon. Spurs remain 12th in the Premier League table with 42 points from 30 matches.</p>
-                    <p class="source">Tottenham Hotspur, BBC Sport</p>
-                </div>
-                <div class="story">
-                    <h3>Vicario Set for Hernia Surgery</h3>
-                    <p>First-choice goalkeeper Guglielmo Vicario has been confirmed for hernia surgery, adding to the club&rsquo;s growing injury list. Fraser Forster is expected to deputise for at least three matches. The Italian international had been playing through discomfort since January.</p>
-                    <p class="source">Tottenham Hotspur</p>
-                </div>
-                <div class="story">
-                    <h3>Pies Face Giants in Friday Night Blockbuster</h3>
-                    <p>Collingwood takes on GWS Giants tonight at Marvel Stadium in a Round&nbsp;3 AFL clash. Key defender Darcy Moore (hamstring) and Jeremy Howe (calf) are both expected to return to the side, providing a major boost to the Magpies&rsquo; defensive stocks after a shaky Round&nbsp;2 loss.</p>
-                    <p class="source">AFL, Collingwood FC</p>
-                </div>
-                <div class="story">
-                    <h3>Bobby Hill Returns to Training After Personal Leave</h3>
-                    <p>2023 Norm Smith Medal winner Bobby Hill has returned to main training at Collingwood following a period of personal leave. The club expects a minimum two-month build-up period before Hill is considered for senior selection.</p>
-                    <p class="source">ESPN, Collingwood FC</p>
-                </div>
-            </div>
-        </div>
-
-        <hr class="section-break">
-
-        <!-- ============================================ -->
-        <!-- TECH & INNOVATION -->
-        <!-- ============================================ -->
-        <div class="section">
-            <div class="section-rule"><h2>Tech &amp; Innovation</h2></div>
-
-            <div class="stories-columns">
-                <div class="story">
-                    <h3>Apple Launches MacBook Air with M5 Chip</h3>
-                    <p>Apple introduced the new MacBook Air powered by the M5 chip, featuring a faster CPU, next-generation GPU with a Neural Accelerator in each core, and up to 32GB of unified memory. The base model starts at $1,199 with availability from April&nbsp;4.</p>
-                    <p class="source">Apple Newsroom</p>
-                </div>
-                <div class="story">
-                    <h3>OpenAI Releases GPT-5.4 with 1M Token Context</h3>
-                    <p>OpenAI launched GPT-5.4 with an unprecedented one-million-token context window. The new &ldquo;Thinking&rdquo; model scores 83% on economic value benchmarks, reaching human expert levels in financial analysis, legal reasoning and medical diagnostics.</p>
-                    <p class="source">OpenAI</p>
-                </div>
-                <div class="story">
-                    <h3>Meta Announces Custom AI Chip Roadmap</h3>
-                    <p>Meta revealed four new generations of custom AI silicon &mdash; the MTIA 300-500 series &mdash; designed to reduce reliance on Nvidia GPUs. Mass deployment is planned for 2027, with the company claiming a 40% reduction in inference costs per token.</p>
-                    <p class="source">Meta, NVIDIA GTC 2026</p>
-                </div>
-                <div class="story">
-                    <h3>Morgan Stanley: &ldquo;Transformative AI&rdquo; a Deflationary Force</h3>
-                    <p>Morgan Stanley predicts transformative AI will become a major deflationary force through 2027 as tools replicate knowledge work at a fraction of the cost. The bank projects AI could add $4.4 trillion to global GDP by 2030.</p>
-                    <p class="source">Fortune, Morgan Stanley</p>
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-    <!-- FOOTER -->
-    <div class="footer">
-        <strong>The Matt Express</strong> &middot; Est. 2026 &middot; Published daily at 7:00 AM AEDT<br>
-        Bias-free reporting &middot; Curated for Matt &middot; All rights reserved
-    </div>
-
-</div>
 </body>
 </html>
